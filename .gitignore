@@ -2,7 +2,4 @@
 *.log
 *.dvi
 *.synctex.gz
-Introduction-To-The-Theory-Of-Computation-Michael-Sipser.pdf
-*cryptominisat*
-*.mp4
-books/*
+.vscode/*
