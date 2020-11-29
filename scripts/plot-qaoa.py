@@ -8,8 +8,9 @@ import sys
 
 def print_goodies(data, best, p):
     e = 0.999 * best
-    near_max = data[data[:,-1] >= e]
-    # near_max = near_max[near_max[:,2*p].argsort()]
+    idxs = data[:,-1] >= e
+    near_max = data[idxs]
+    near_max = near_max[near_max[:,-1].argsort()]
 
     for row in near_max:
         print('{}'.format(*row))
@@ -68,7 +69,7 @@ def plot1(name):
 
     idx_best = np.argmax(data[:,-1])
     best = data[idx_best]
-    print('best[{}]: {}'.format(idx_best, best))
+    print('best: {}'.format(*best))
     
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(data[:,0], data[:,1], data[:,2], marker='.', label=str(name))

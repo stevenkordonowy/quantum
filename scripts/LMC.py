@@ -7,6 +7,7 @@ from functools import reduce
 import time
 from numpy.linalg import norm
 import ring
+from qutip import *
 
 I = np.array([[1,0],[0,1]], int)
 X = np.array([[0,1],[1,0]], int)
@@ -40,7 +41,7 @@ Calculates operator sum(Xi), where Xi is the NOT operator on the i'th bit and th
 def X_sum(n):
     return reduce(np.add, [Xi(i,n) for i in range(n)])
 
-def hammingDistance(n1, n2) : 
+def hamming_dist(n1, n2) : 
 
     x = n1 ^ n2  
     setBits = 0
@@ -67,21 +68,16 @@ def psi_k(k, n, gamma, beta):
 
     c = 0
     for j in range(N):
-        if c % 10000 == 0:
-            print('{}/{}'.format(c,N))
         # t = time.time()
-        d = hammingDistance(j,k)
-        # Ubeta_cont = ((-1j * beta_sin)**d)*(beta_cos)**(n - d)
+        d = hamming_dist(j,k)
 
-        H_jj = H_jj_entry(j, n)
-        # Ugamma_cont = cmath.exp(c_gamma * H_jj)  
-        s = s + Ubs[d] * cmath.exp(c_gamma * H_jj)  
-        # print('loop took {}s'.format(time.time() - t))
+        H_jj = H_jj_ring_fast(j, n)  
+        s = s + Ubs[d] * cmath.exp(c_gamma * H_jj)
         c = c + 1
     return s / math.sqrt(N)
 
 
-def H_jj_entry(j, n):
+def H_jj_ring_fast(j, n):
     rotated_j_in_5 = ring.project(j, n)
     H_jj = H2_5[rotated_j_in_5]
 
@@ -96,7 +92,7 @@ def feynman_exp_val(n, gamma, beta):
     ev = 0
     for j in range(2**n):
         t = time.time()
-        ev = ev + H_jj_entry(j, n) *  (norm(psi_k(j, n, gamma, beta)) ** 2)
+        ev = ev + H_jj_ring_fast(j, n) *  (norm(psi_k(j, n, gamma, beta)) ** 2)
         print('{} outer loop took {}s'.format(j, time.time() - t))
     return ev
 
@@ -114,18 +110,22 @@ def construct_unitary(U_gammas, U_betas):
     U = reduce(np.dot, Us)
     return U
 
-'''
-Returns U = Ub_n*Uc_n* ... *Ub_1*Uc_1
-'''
-def construct_unitary_gpu(U_gammas, U_betas):
-    Us = []
-    for i in range(len(U_gammas)):
-        # Gotta be a smarter way, zip?
-        Us.append(U_betas[i])
-        Us.append(U_gammas[i])
 
-    U = reduce(np.dot, gpu.garray(Us))
-    return U
+def construct_U_beta(beta, n):
+    Ub = expm(-1j*beta*X)
+    return reduce(np.kron, [Ub for _ in range(n)])
+
+def construct_U_gamma(gamma, n):
+    d = [cmath.exp(-1j*gamma*H_jj_ring_fast(k, n)) for k in range(2 ** n)]
+    return np.diag(d)
+
+def construct_U_beta_qutip(beta, n):
+    Ub = Qobj(expm(-1j*beta*X), copy=False)
+    return tensor([Ub for _ in range(n)])
+
+def construct_U_gamma_qutip(gamma, n):
+    d = [cmath.exp(-1j*gamma*H_jj_ring_fast(k, n)) for k in range(2 ** n)]
+    return Qobj(np.diag(d), copy=False)
 
 
 def U_angle_operator(U, angle):
@@ -143,7 +143,7 @@ class LocalMaxCut:
         self.__N = len(H[0])
         self.__n = int(math.log2(self.__N))
         self.X_sum = X_sum(self.__n)
-        self.__plus_n = plus_n(self.__n)
+        self.plus_n = plus_n(self.__n)
         self.__ExpHam = np.array(np.empty(2 ** 5), dtype='complex')
         self.__ExpHam[:] = np.nan
 
@@ -161,7 +161,7 @@ class LocalMaxCut:
     '''
     def schrodinger_ev(self, U_gammas, U_betas):
         U = construct_unitary(U_gammas, U_betas)
-        psi = U.dot(self.__plus_n)
+        psi = U.dot(self.plus_n)
         exp = psi.conj().T.dot(self.Ham).dot(psi)
         return abs(exp.item())
     
@@ -172,11 +172,11 @@ class LocalMaxCut:
     def U_beta_entry(self, beta, i, j):
         beta_sin = math.sin(beta)
         beta_cos = math.cos(beta) 
-        d = hammingDistance(i,j)
+        d = hamming_dist(i,j)
         return ((-1j * beta_sin)**d)*(beta_cos)**(self.__n - d)
 
     def U_gamma_entry(self, gamma, j):
-        H_jj = H_jj_entry(j, self.__n)
+        H_jj = H_jj_ring_fast(j, self.__n)
         return cmath.exp(-1j * gamma * H_jj)
 
 
