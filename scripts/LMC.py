@@ -47,54 +47,36 @@ def hamming_dist(n1, n2) :
     setBits = 0
 
     while (x > 0) : 
-        setBits += x & 1
+        d = x & 1
+        setBits += d
         x >>= 1
     
     return setBits  
 
 
-def psi_k(k, n, gamma, beta):
-    s = 0
 
-    beta_sin = math.sin(beta)
-    beta_cos = math.cos(beta)
-    c_gamma = -1j * gamma
-
-    N = 2 **n
-
-    Ubs = []
-    for d in range(n + 1): # can be in [0,n]
-        Ubs.append(((-1j * beta_sin)**d)*(beta_cos)**(n - d))
-
-    c = 0
-    for j in range(N):
-        # t = time.time()
-        d = hamming_dist(j,k)
-
-        H_jj = H_jj_ring_fast(j, n)  
-        s = s + Ubs[d] * cmath.exp(c_gamma * H_jj)
-        c = c + 1
-    return s / math.sqrt(N)
-
-
-def H_jj_ring_fast(j, n):
-    rotated_j_in_5 = ring.project(j, n)
-    H_jj = H2_5[rotated_j_in_5]
+def H_jj_ring_fast(cut, n):
+    if n == 5:
+        return H_jj_ring_fast_5(cut)
+    
+    cut_in_5 = ring.project(cut, n)
+    num_happy = H2_5[cut_in_5]
 
     for k in range(1, n):
-        rotated_j = ring.shift(j, k, n)
-        rotated_j_in_5 = ring.project(rotated_j, n)
-        H_jj = H_jj + H2_5[rotated_j_in_5]
-    return H_jj / 3
+        cut_in_5 = ring.shift(cut, k, n)
+        rotated_j_in_5 = ring.project(cut_in_5, n)
+        num_happy = num_happy + H2_5[rotated_j_in_5]
+    return num_happy / 3
 
 
-def feynman_exp_val(n, gamma, beta):
-    ev = 0
-    for j in range(2**n):
-        t = time.time()
-        ev = ev + H_jj_ring_fast(j, n) *  (norm(psi_k(j, n, gamma, beta)) ** 2)
-        print('{} outer loop took {}s'.format(j, time.time() - t))
-    return ev
+def H_jj_ring_fast_5(cut):
+    num_happy = H2_5[cut]
+
+    for k in range(1, 5):
+        cut_in_5 = ring.shift(cut, k, 5)
+        num_happy = num_happy + H2_5[cut_in_5]
+    return num_happy / 3
+
 
 
 '''

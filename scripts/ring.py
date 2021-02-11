@@ -8,6 +8,7 @@ def ham_source_of_truth(n):
         for i in range(n):
             nbd = find_nbhd(i, cut)
             if is_happy(nbd):
+                # print(nbd)
                 c = c + 1
                 
         diag.append(c)
@@ -58,6 +59,8 @@ def construct_ham_local2_as_arr(vtx, n):
             nbd = find_nbhd(inside, cut)
             if is_happy(nbd):
                 c = c + 1
+            # else:
+            #     print('not happy: cut={}, nbd={}, idx={}'.format(cut, nbd, inside))
                 
         diag.append(c)
     return diag
