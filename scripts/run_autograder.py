@@ -134,28 +134,25 @@ class AlgInstance:
 
 
     def run_vec(self):
-        state = self.build_state()
-        return self.expectation(state)
-
-    def build_state(self):
         temp_vec = np.ones(self.N) * self.c
         for p in range(1, len(self._g) + 1):
             temp_vec = self.apply_U_p(temp_vec, p)
-        
-        return temp_vec
 
+        return self.expectation(temp_vec)
 
-
-    def run_vec_half(self):
-        state = self.build_state_in_half()
-        return self.expectation_half(state)
-
-    def build_state_in_half(self):
+    def run_vec_in_half(self):
         temp_vec = np.ones(int(self.N / 2)) * self.c
         for p in range(1, len(self._g) + 1):
             temp_vec = self.apply_U_p_half(temp_vec, p)
 
-        return temp_vec
+        return self.expectation(np.concatenate((temp_vec, np.flip(temp_vec))))
+
+    def run_vec_half(self):
+        temp_vec = np.ones(int(self.N / 2)) * self.c
+        for p in range(1, len(self._g) + 1):
+            temp_vec = self.apply_U_p_half(temp_vec, p)
+
+        return self.expectation(np.concatenate((temp_vec, np.flip(temp_vec))))
 
     def apply_U_p_half(self, vec, p):
         size = int(self.N / 2)
@@ -169,46 +166,33 @@ class AlgInstance:
                 g_val = self.Ug_el(j, p)
                 s_k += b_val * g_val * vec[j]
 
-                b_val2 = self.Ub_el(k, j + size, p)
-                g_val2 = self.Ug_el(j + size, p)
-                s_k += b_val2 * g_val2 * vec[size - j - 1]
-                
-
-            temp_vec[k] = s_k 
+            temp_vec[k] = s_k
 
         return temp_vec
 
     # <vec|C|vec>
     def expectation_half(self, vec):
         exp = 0
-        size = int(self.N / 2)
-        for k in range(size):
+        for k in range(int(self.N / 2)):
             exp += self.cut_value(k) * abs(vec[k]) ** 2
-            # exp += self.cut_value(k) * abs(vec[size - k - 1]) ** 2
 
-        # multiply by 2 to make up for only half counting
-        return 2 * exp
+        return 2 * sqrt(2) * exp
+
+    # def run_
 
     REPETITIONS = 4
 
     def apply_U_p(self, vec, p):
         temp_vec = np.zeros(self.N, dtype='complex')
         for k in range(self.N):
-            # dumbm ap = {}
             s_k = 0
             # Parallel(n_jobs=1)(delayed(sqrt)(i**2) for i in range(10))
             for j in range(self.N):
                 # s_k = self.inner_U_p(vec, s_k, k, j, p)
                 b_val = self.Ub_el(k, j, p)
                 g_val = self.Ug_el(j, p)
-                toadd= b_val * g_val * vec[j]
-                # if toadd in dumbmap:
-                #     dumbmap[toadd].append(j)
-                # else:
-                #     dumbmap[toadd] = [j]
-                # print(toadd)
-                s_k += toadd
-            # print(dumbmap)
+                s_k += b_val * g_val * vec[j]
+
             temp_vec[k] = s_k
 
         return temp_vec

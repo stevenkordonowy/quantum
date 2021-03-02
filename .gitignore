@@ -2,4 +2,5 @@
 *.log
 *.dvi
 *.synctex.gz
-*.vscode/*
+*vscode*
+__pycache__

@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{qaoa1}
+E.~Farhi, J.~Goldstone, and S.~Gutmann.
+\newblock A quantum approximate optimization algorithm applied to a bounded
+  occurrence constraint problem, 2015.
+
+\bibitem{farhi2020quantum}
+E.~Farhi, J.~Goldstone, S.~Gutmann, and L.~Zhou.
+\newblock The quantum approximate optimization algorithm and the
+  sherrington-kirkpatrick model at infinite size, 2020.
+
+\bibitem{gw}
+M.~{Goemans} and D.~P. {Williamson}.
+\newblock Improved approximation algorithms for maximum cut and satisfiability
+  using semidefinite programming.
+\newblock {\em Journal of the Association for Computing Machinery},
+  42(6):1115--11145, 1995.
+
+\bibitem{Hastings}
+M.~B. Hastings.
+\newblock Classical and quantum bounded depth approximation algorithms, 2019.
+
+\end{thebibliography}

@@ -1,0 +1,47 @@
+\documentclass[10pt]{article}
+
+% import a set of useful packages for math
+\usepackage{amsmath, amssymb,amsthm,xspace}
+
+% for importing images
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% for algorithm environments
+\usepackage{algorithm}     % creates the float "Algorithm 1: My Algorithm"
+\usepackage{algorithmic}   % for the algorithm itself, e.g. "for x = 1 to n..."
+\usepackage{braket}
+\usepackage{tikz}
+
+%%%% import any other packages here
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{perpage}
+\usepackage{mathtools}
+% \MakePerPage{footnote}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}
+
+\pagestyle{fancy}
+% \rhead{KORDONOWY}
+
+\begin{document}
+
+\title{Quantum vs classical local algorithms for local maxcut}
+\author{Adam Bouland, Alex Kolla, Charles Carlson, Steven Kordonowy}
+\date{}
+\maketitle
+
+The Quantum Approximate Optimization Algorithm (QAOA) is one of the few quantum algorithms which has proven performance guarantees at low circuit depth (Farhi, Goldstone, Gutmann 2015). However it remains open whether or not the QAOA can exhibit a speedup over classical optimization algorithms, as thus far in all studied cases its performance is eclipsed by classical approaches, at least at low depths. In certain cases even much simpler classical algorithms which are entirely ``local'' in nature can outperform QAOA (Hastings 2019). In this work we explore the performance of QAOA vs. local classical heuristics on an entirely local optimization problem called local-MAXCUT, where an assignment is considered maximal if flipping any single vertex does not raise the overall value of the cut. We find evidence that even for such a locally defined problem, our local classical heuristic outperforms the QAOA for low circuit depths.
+
+\bibliography{bib} 
+% \bibliographystyle{stylename}
+\bibliographystyle{ieeetr}
+
+\end{document}
