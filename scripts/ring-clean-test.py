@@ -41,7 +41,7 @@ class TestRingClean(unittest.TestCase):
     def setUp(self):
         test_print("\n########################\nRunning method:{}\n########################".format(self._testMethodName))
 
-    def test_hamming(self):
+    def xtest_hamming(self):
         s = ''
         for i in range(11):
             for j in range(i, 11):
@@ -215,11 +215,11 @@ class TestRingClean(unittest.TestCase):
         # self.assertTrue(np.allclose(ev, 6.454958892059133), '{} should be equal to {}'.format(ev, 5.45133990578963))
         self.assertTrue(np.allclose(ev, ev2, exp_ev), '{} should be equal to {}'.format(ev, ev2))
         
-    def xtest_p1_full(self):
+    def test_p1_full(self):
         save = True
 
         n = 7
-        num = 100
+        num = 250
 
         test_print('#### Running QAOA for p=1, d=1 on size n={}'.format(n))
         best = -1
@@ -481,7 +481,7 @@ class TestRingClean(unittest.TestCase):
         test_print('Took {}s'.format(time.time() - t))
         test_print('Overall best={} ({}%)'.format(best, best / n))
 
-    def test_p2_around_p2best(self):
+    def xtest_p2_around_p2best(self):
         save = True
 
         n = 11
@@ -604,6 +604,126 @@ class TestRingClean(unittest.TestCase):
         # ev2 = alg.run_vec()
         # t2 = time.time() - t
         # test_print('First: {}s, second: {}'.format(t1, t2))
+
+    def test_f2(self):
+        # print(nbhd_2_boolean())
+        # for a in [-1, 1]:
+        #     for b in [-1, 1]:
+        #         for c in [-1, 1]:
+        for a in [0, 1]:
+            for b in [0, 1]:
+                for c in [0, 1]:
+                    val = f_general(a,[b,c])
+                    print('{}, {}, {}: {}'.format(a,b,c, val))
+                    if val[0]:
+                        self.assertEqual(1, val[1], 'Should be true: {},{},{}'.format(a,b,c))
+                    else:
+                        self.assertEqual(0, val[1], 'Should be false: {},{},{}'.format(a,b,c))
+
+    def test_f3(self):
+        
+        for a in [-1, 1]:
+            for b in [-1, 1]:
+                for c in [-1, 1]:
+                    for d in [-1, 1]:
+        # for a in [0, 1]:
+        #     for b in [0, 1]:
+        #         for c in [0, 1]:
+        #             for d in [0, 1]:
+                        val = f3(a,b,c,d)
+                        print('{}, {}, {}, {}: {}'.format(a,b,c,d, val))
+                        if val[0]:
+                            self.assertEqual(1, val[1], 'Should be true')
+                        else:
+                            self.assertEqual(0, val[1], 'Should be false')
+
+    def test_hypercube(Self):
+        construct_H_cube()
+
+    def xtest_f4(self):
+        # for a in [-1, 1]:
+        #     for b in [-1, 1]:
+        #         for c in [-1, 1]:
+        #             for d in [-1, 1]:
+        #                 for e in [-1, 1]:
+        for a in [0, 1]:
+            for b in [0, 1]:
+                for c in [0, 1]:
+                    for d in [0, 1]:
+                        for e in [0, 1]:
+                            val = f_general(a,[b,c,d,e])
+                            print('{}, {}, {}, {}, {}: {}'.format(a,b,c,d,e, val))
+                            if val[0]:
+                                self.assertEqual(1, val[1], 'Should be true')
+                            else:
+                                self.assertEqual(0, val[1], 'Should be false')
+    def xtest_f5(self):
+        # for a in [-1, 1]:
+        #     for b in [-1, 1]:
+        #         for c in [-1, 1]:
+        #             for d in [-1, 1]:
+        #                 for e in [-1, 1]:
+        for a in [0, 1]:
+            for b in [0, 1]:
+                for c in [0, 1]:
+                    for d in [0, 1]:
+                        for e in [0, 1]:
+                            for f in [0,1]:
+                                val = f_general(a,[b,c,d,e,f])
+                                print('{}, {}, {}, {}, {}, {}: {}'.format(a,b,c,d,e,f, val))
+                                if val[0]:
+                                    self.assertEqual(1, val[1], 'Should be true')
+                                else:
+                                    self.assertEqual(0, val[1], 'Should be false')
+
+    def xtest_f6(self):
+        # for a in [-1, 1]:
+        #     for b in [-1, 1]:
+        #         for c in [-1, 1]:
+        #             for d in [-1, 1]:
+        #                 for e in [-1, 1]:
+        for a in [0, 1]:
+            for b in [0, 1]:
+                for c in [0, 1]:
+                    for d in [0, 1]:
+                        for e in [0, 1]:
+                            for f in [0,1]:
+                                for g in [0,1]:
+                                    val = f_general(a,[b,c,d,e,f,g])
+                                    print('{}, {}, {}, {}, {}, {}, {}: {}'.format(a,b,c,d,e,f,g, val))
+                                    if val[0]:
+                                        self.assertEqual(1, val[1], 'Should be true')
+                                    else:
+                                        self.assertEqual(0, val[1], 'Should be false')
+
+
+    def xtest_f7(self):
+        # for a in [-1, 1]:
+        #     for b in [-1, 1]:
+        #         for c in [-1, 1]:
+        #             for d in [-1, 1]:
+        #                 for e in [-1, 1]:
+        for a in [0, 1]:
+            for b in [0, 1]:
+                for c in [0, 1]:
+                    for d in [0, 1]:
+                        for e in [0, 1]:
+                            for f in [0,1]:
+                                for g in [0,1]:
+                                    for h in [0,1]:
+                                        val = f_general(a,[b,c,d,e,f,g,h])
+                                        # print('{}, {}, {}, {}, {}, {}, {}, {}: {}'.format(a,b,c,d,e,f,g,h, val))
+                                        # if val[0]:
+                                        #     self.assertEqual(1, val[1], 'Should be true')
+                                        # else:
+                                        #     self.assertEqual(0, val[1], 'Should be false')
+    def xtest_print_bool_nbhds(self):
+        print('d=2: {}'.format(nbhd_2_boolean()))
+        print('\nd=3: {}'.format(nbhd_3_boolean()))
+        print('\nd=4: {}'.format(nbhd_4_boolean()))
+        print('\nd=5: {}'.format(nbhd_5_boolean()))
+        print('\nd=6: {}'.format(nbhd_6_boolean()))
+        print('\nd=7: {}'.format(nbhd_7_boolean()))
 
 if __name__ == '__main__':
     unittest.main()

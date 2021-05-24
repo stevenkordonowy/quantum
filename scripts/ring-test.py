@@ -76,7 +76,7 @@ class TestRing(unittest.TestCase):
         print("########################\nRunning method:{}\n########################".format(self._testMethodName))
 
 
-    def xtest_full_angles_p1(self):
+    def test_full_angles_p1(self):
         n = 7
         with open('n7p1.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
@@ -90,8 +90,8 @@ class TestRing(unittest.TestCase):
         running_best = (0.0,)
         results = []
         c1 = 1
-        num_gamma = 250
-        num_beta = 250
+        num_gamma = 100
+        num_beta = 100
         unitaries_gamma = {}
         unitaries_beta = {}
         for g1 in np.linspace(0.1, math.pi, num = num_gamma):
@@ -539,13 +539,15 @@ class TestRing(unittest.TestCase):
         C = construct_ham_local(0,3)
         # C = ham_source_of_truth(n)
 
-        gamma = 0.5975309227127786
-        beta = 0.3144734246243383
+        # gamma = 0.5975309227127786
+        # beta = 0.3144734246243383
+        gamma = 0.5711986642890533
+        beta = 2.824260062318097
         lmc = LocalMaxCut(C)
         exp_val = lmc.schrodinger_ev([expi(lmc.Ham,gamma)], [expi(lmc.X_sum,beta)])
         # psi = np.array(lmc.build_psi(gamma,beta))
         # exp_val2 = psi.conj().T.dot(C).dot(psi)
-        self.assertTrue(np.allclose(exp_val/n, 0.939374559336945), 'Gotta beat 0.939374559336945')
+        self.assertTrue(np.allclose(exp_val/n, 0.9390598012284963), 'Gotta beat 0.9390598012284963')
 
 
     def test_playground(self):
